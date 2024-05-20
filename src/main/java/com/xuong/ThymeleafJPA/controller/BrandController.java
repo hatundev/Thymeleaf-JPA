@@ -12,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/brand")
 public class BrandController {
+
     @Autowired
     private BrandService brandService;
 
@@ -19,4 +20,5 @@ public class BrandController {
     public List<Brand> findAll() {
         return brandService.findAll();
     }
+
 }

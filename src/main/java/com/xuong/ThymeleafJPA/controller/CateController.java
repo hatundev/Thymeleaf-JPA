@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Repository
-@RequestMapping("/cate")
+@RequestMapping( "/cate")
 public class CateController {
     @Autowired
     private CategoryService categoryService;

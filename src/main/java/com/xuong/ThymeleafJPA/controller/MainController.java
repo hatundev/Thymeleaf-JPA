@@ -11,47 +11,37 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class MainController {
 
     @Autowired
     private ProductController productController;
+
     @Autowired
     private BrandController brandController;
+
     @Autowired
     private StatusController statusController;
+
     @Autowired
     private CateController cateController;
+
     @Autowired
     private SubCateController subCateController;
+
     @Autowired
     private ProductService productService;
-
     private List<Brand> brandList;
     private List<Status> statusList;
     private List<SubCategory> subCategoryList;
     private List<Category> categoryList;
-
-    @Autowired
-    public MainController(ProductController productController,
-                          BrandController brandController,
-                          StatusController statusController,
-                          CateController cateController,
-                          SubCateController subCateController) {
-        this.productController = productController;
-        this.brandController = brandController;
-        this.statusController = statusController;
-        this.cateController = cateController;
-        this.subCateController = subCateController;
-    }
 
     @PostConstruct
     public void init() {
@@ -60,15 +50,16 @@ public class MainController {
         this.subCategoryList = subCateController.findAll();
         this.categoryList = cateController.findAll();
     }
+
     /*
-    * Get
-    * */
+     * Get
+     * */
     @GetMapping("/view")
     public String view(Model model) {
         model.addAttribute("listBrand", brandList);
         model.addAttribute("listStatus", statusList);
         model.addAttribute("listCate", categoryList);
-        model.addAttribute("listProduct",productController.findAll());
+        model.addAttribute("listProduct", productController.findAll());
         return "view";
     }
 
@@ -82,24 +73,28 @@ public class MainController {
     }
 
     @GetMapping("/detail-product/{id}")
-    public String detailProduct(@PathVariable Long id, Model model){
-       Product product = productController.getProduct(id).get();
-       model.addAttribute("detailProduct", product);
+    public String detailProduct(@PathVariable Long id, Model model) {
+        Product product = productController.getProduct(id).get();
+        model.addAttribute("detailProduct", product);
         model.addAttribute("listBrand", brandList);
         model.addAttribute("listSubCate", subCategoryList);
         model.addAttribute("listStatus", statusList);
         return "detail";
-    };
+    }
+
+    ;
 
     @GetMapping("/update-product/{id}")
-    public String updateProduct(@PathVariable Long id, Model model){
+    public String updateProduct(@PathVariable Long id, Model model) {
         Product product = productController.getProduct(id).get();
         model.addAttribute("detailProduct", product);
         model.addAttribute("listBrand", brandList);
         model.addAttribute("listSubCate", subCategoryList);
         model.addAttribute("listStatus", statusList);
         return "update";
-    };
+    }
+
+    ;
 
 
     /*
@@ -116,11 +111,19 @@ public class MainController {
      * Put
      * */
     @PostMapping("/update-product")
-    public String updateProduct(@ModelAttribute Product detailProduct){
+    public String updateProduct(@ModelAttribute Product detailProduct) {
         ProductRequest productRequest = productService.convertProductToProductRequest(detailProduct);
         productService.updateProduct(productRequest);
         return "redirect:/view";
     }
 
+    /*
+     * Delete
+     * */
+    @GetMapping("/del-product/{id}")
+    public String deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return "redirect:/view";
+    }
 
 }
